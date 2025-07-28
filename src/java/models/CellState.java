@@ -5,6 +5,6 @@ public enum CellState {
     WALL,
     START,
     END,
-    VISITED,
-    PATH
+    PATH,
+    VISITED
 }
