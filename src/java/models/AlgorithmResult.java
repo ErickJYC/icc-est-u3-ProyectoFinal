@@ -1,34 +1,37 @@
 package models;
 
 public class AlgorithmResult {
-    private String name;
+    private String algorithmName;
     private int steps;
-    private long time;
+    private long timeNano;
 
-    public AlgorithmResult(String name, int steps, long time) {
-        this.name = name;
+    public AlgorithmResult(String algorithmName, int steps, long timeNano) {
+        this.algorithmName = algorithmName;
         this.steps = steps;
-        this.time = time;
+        this.timeNano = timeNano;
     }
 
-    public String getName() {
-        return name;
+    public String getAlgorithmName() {
+        return algorithmName;
     }
 
     public int getSteps() {
         return steps;
     }
 
-    public long getTime() {
-        return time;
+    public long getTimeNano() {
+        return timeNano;
     }
 
-    public String toCSV() {
-        return name + "," + steps + "," + time;
+    public String toCSVLine() {
+        return algorithmName + "," + steps + "," + timeNano;
     }
 
-    public static AlgorithmResult fromCSV(String line) {
-        String[] data = line.split(",");
-        return new AlgorithmResult(data[0], Integer.parseInt(data[1]), Long.parseLong(data[2]));
+    public static AlgorithmResult fromCSVLine(String line) {
+        String[] parts = line.split(",");
+        String name = parts[0];
+        int steps = Integer.parseInt(parts[1]);
+        long time = Long.parseLong(parts[2]);
+        return new AlgorithmResult(name, steps, time);
     }
 }

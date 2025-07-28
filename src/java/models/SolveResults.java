@@ -5,17 +5,25 @@ import java.util.List;
 import java.util.Set;
 
 public class SolveResults {
-    private List<AlgorithmResult> list;
+    private List<List<Cell>> caminos;
+    private List<Set<Cell>> visitados;
 
     public SolveResults() {
-        list = new ArrayList<>();
+        this.caminos = new ArrayList<>();
+        this.visitados = new ArrayList<>();
     }
 
-    public void add(AlgorithmResult result) {
-        list.add(result);
+
+    public void agregarResultado(List<Cell> camino, Set<Cell> celdasVisitadas) {
+        this.caminos.add(camino);
+        this.visitados.add(celdasVisitadas);
     }
 
-    public List<AlgorithmResult> getList() {
-        return list;
+    public List<List<Cell>> getCaminos() {
+        return caminos;
+    }
+
+    public List<Set<Cell>> getVisitados() {
+        return visitados;
     }
 }

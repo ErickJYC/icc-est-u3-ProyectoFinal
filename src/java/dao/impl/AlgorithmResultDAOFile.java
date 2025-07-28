@@ -8,59 +8,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlgorithmResultDAOFile implements AlgorithmResultDAO {
-    private final String fileName = "results.csv";
+    private static final String ARCHIVO = "resultados.csv";
 
     @Override
-    public void save(AlgorithmResult result) {
-        List<AlgorithmResult> all = findAll();
-        boolean updated = false;
+    public void guardar(AlgorithmResult nuevo) {
+        List<AlgorithmResult> actuales = listar();
+        boolean existe = false;
 
-        for (int i = 0; i < all.size(); i++) {
-            if (all.get(i).getName().equals(result.getName())) {
-                all.set(i, result); // actualiza si ya existe
-                updated = true;
+        for (int i = 0; i < actuales.size(); i++) {
+            AlgorithmResult r = actuales.get(i);
+            if (r.getAlgorithmName().equalsIgnoreCase(nuevo.getAlgorithmName())) {
+                actuales.set(i, nuevo);
+                existe = true;
                 break;
             }
         }
 
-        if (!updated) {
-            all.add(result); // agrega si es nuevo
+        if (!existe) {
+            actuales.add(nuevo);
         }
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
-            for (AlgorithmResult r : all) {
-                writer.println(r.toCSV());
+        try (PrintWriter writer = new PrintWriter(new FileWriter(ARCHIVO))) {
+            for (AlgorithmResult r : actuales) {
+                writer.println(r.toCSVLine());
             }
         } catch (IOException e) {
-            System.out.println("Error al guardar: " + e.getMessage());
+            System.err.println("Error al guardar resultados: " + e.getMessage());
         }
     }
 
     @Override
-    public List<AlgorithmResult> findAll() {
-        List<AlgorithmResult> list = new ArrayList<>();
-        File file = new File(fileName);
+    public List<AlgorithmResult> listar() {
+        List<AlgorithmResult> lista = new ArrayList<>();
 
-        if (!file.exists()) return list;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                list.add(AlgorithmResult.fromCSV(line));
-            }
-        } catch (IOException e) {
-            System.out.println("Error al leer: " + e.getMessage());
+        File archivo = new File(ARCHIVO);
+        if (!archivo.exists()) {
+            return lista;
         }
 
-        return list;
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                lista.add(AlgorithmResult.fromCSVLine(linea));
+            }
+        } catch (IOException e) {
+            System.err.println("Error al leer archivo: " + e.getMessage());
+        }
+
+        return lista;
     }
 
     @Override
-    public void clear() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
-            writer.print("");
+    public void limpiar() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(ARCHIVO))) {
+
         } catch (IOException e) {
-            System.out.println("Error al limpiar: " + e.getMessage());
+            System.err.println("Error al limpiar archivo: " + e.getMessage());
         }
     }
 }
